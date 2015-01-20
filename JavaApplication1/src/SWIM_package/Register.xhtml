@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<link type="text/css" rel="stylesheet"
+		href="#{request.contextPath}/resources/css/styles.css" />
+</h:head>
+<h:outputScript library="primefaces" name="jquery/jquery.js"
+	target="head" />
+<h:outputScript library="js" name="blockui.js" target="head" />
+<h:outputScript library="js" name="swimBlockUi.js" target="head" />
+<body>
+	<div id="wrap">
+		<div id="header">
+			<ui:include src="/snippets/CommonHeader.xhtml"></ui:include>
+		</div>
+		<div id="inner-wrap">
+			<div id="content">
+
+				<p:panel header="Registration Form">
+					<p:growl id="SwimMsg" life="3000" />
+					<h:form>
+
+						<b>Access Information:</b>
+						<br />
+						<br />
+
+						<h:panelGrid columns="3" id="matchPassword" columnClasses="column"
+							cellpadding="6">
+							<h:outputLabel style="width: 300px;" for='usrEmail1'
+								value='*Email:' />
+							<p:inputText id='usrEmail1' label="Email"
+								value='#{userBean.user.email}' required='true'
+								requiredMessage="Value is required"
+								validatorMessage="Invalid Email">
+								<f:validateRegex pattern="[a-zA-Z0-9]+@[a-zA-Z]+.[a-zA-Z]{2,3}"></f:validateRegex>
+							</p:inputText>
+
+							<p:message for="usrEmail1" />
+							<h:outputLabel for='usrPass1' value='*Password:' />
+							<p:password id='usrPass1' value='#{userBean.user.password}'
+								label="Password" feedback="true" match="usrPass2" required='true'
+								requiredMessage="Value is required">
+
+							</p:password>
+							<p:message for="usrPass1" />
+
+							<h:outputLabel for='usrPass2' value='*Confirm Password:' />
+							<p:password id='usrPass2' value='#{userBean.user.password}'
+								label="Confirmed Password" feedback="false" required='true'
+								requiredMessage="Value is required">
+
+							</p:password>
+							<p:message for="usrPass2" />
+						</h:panelGrid>
+						<br />
+						<b>Personal Information: </b>
+						<br />
+						<br />
+
+						<h:panelGrid columns='3' columnClasses="column" cellpadding="6">
+							<h:outputLabel for='usrName' value='*Name:' />
+							<p:inputText id='usrName' value='#{userBean.user.name}' required='true'
+								requiredMessage="Value is required" />
+							<p:message for="usrName" />
+
+							<h:outputLabel for='usrSurname' value='*Surname:' />
+							<p:inputText id='usrSurname' value='#{userBean.user.surname}' required='true'
+								requiredMessage="Value is required" />
+
+
+							<p:message for="usrSurname" />
+
+
+
+							<h:outputLabel for='usrAddr' value='*Address:' />
+							<p:inputText id='usrAddr' value='#{userBean.user.address}' required='true'
+								requiredMessage="Value is required">
+
+							</p:inputText>
+							<p:message for="usrAddr" />
+
+							<h:outputLabel for='usrPhone' value='*Phone:' />
+							<p:inputText id='usrPhone' value='#{userBean.user.phone}'
+							required='true'
+								requiredMessage="Value is required"
+								validatorMessage="Invalid Phone Number,Only numbers are valid">
+								<f:validateRegex pattern="[0-9]*"></f:validateRegex>
+							</p:inputText>
+
+
+							<p:message for="usrPhone" />
+
+							<h:outputLabel for="usrCountry" value="*Country:" />
+							<h:selectOneMenu id="usrCountry" value="#{userBean.user.country}"
+								converter="#{nomcountryConverter}">
+								<f:selectItem itemLabel="Select Country" itemValue="" ></f:selectItem>								
+								<f:selectItems value="#{commonBean.countries}" var="country"
+									itemLabel="#{country.name}" itemValue="#{country.name}"  />
+								<f:ajax render="usrCity" update="usrCity" />
+							</h:selectOneMenu>
+
+							<p:message for="usrCountry" />
+
+							<h:outputLabel for='usrCity' value='*City:' />
+							<h:selectOneMenu id="usrCity" value="#{userBean.user.city}"
+								converter="#{nomcityConverter}" >
+								<f:selectItem itemLabel="Select City" itemValue="" ></f:selectItem>							
+								<f:selectItems
+									value="#{commonBean.cities}"
+									var="city" itemLabel="#{city.name}" itemValue="#{city.name}" />
+							</h:selectOneMenu>
+							<p:message for="usrCity" />
+
+							<h:outputLabel for='usrSkill' value='*Skills:' />
+							<p:selectManyMenu id="usrSkill" value="#{userBean.uSkills}"
+								converter="#{skillConverter}">
+								<f:selectItems value="#{commonBean.skills}" var="skill"
+									itemLabel="#{skill.name}" itemValue="#{skill}" />
+							</p:selectManyMenu>
+							<p:message for="usrSkill" />
+
+
+							<p:commandButton id="register" action="#{userBean.register()}"
+								update="matchPassword" value='register' type="submit"
+								ajax="false" styleClass="block" />
+
+
+						</h:panelGrid>
+
+						<h:panelGrid columns='3'>
+
+
+
+						</h:panelGrid>
+					</h:form>
+				</p:panel>
+
+
+			</div>
+		</div>
+		<div id="footer">
+			<ui:include src="/snippets/CommonFooter.xhtml"></ui:include>
+		</div>
+	</div>
+</body>
+</html>

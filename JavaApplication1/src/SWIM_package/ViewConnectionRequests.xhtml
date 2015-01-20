@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head><link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/css/styles.css" /></h:head>
+	<h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
+	<h:outputScript library="js" name="blockui.js" target="head" />
+	<h:outputScript library="js" name="swimBlockUi.js" target="head" />
+<body> 
+    <div id="wrap">
+        <div id="header">
+        <ui:include src="/snippets/CommonHeader.xhtml"></ui:include>
+        </div>
+        <div id="inner-wrap">
+            <div id="content">
+	<h:form>
+		<p:panel header="New Connection Requests">
+
+		<h:panelGrid rendered="#{cbean.connRequestList.size() > 0}">
+			<p:dataTable id="dataTable" var="user"
+				value="#{cbean.connRequestList}" border="1" paginator="true"
+				rows="5" lazy="true"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15">
+				<f:facet name="header">  
+            Connections Requests   
+        </f:facet>
+				<p:column>
+					<f:facet name="header">Name</f:facet>
+				#{user.name}
+			</p:column>
+				<p:column>
+					<f:facet name="header">Surname</f:facet>
+				#{user.surname} 
+			</p:column>
+				<p:column>
+					<f:facet name="header">Skills</f:facet>
+				#{user.SkillToString()} 
+			</p:column>
+				<p:column>
+					<p:commandButton value="accept"
+						action="#{cbean.setSelectedUser(user)}" update="acceptDialog"
+						oncomplete="acceptDlg.show()" />
+					<p:commandButton value="deny"
+						action="#{cbean.setSelectedUser(user)}" update="denayDialog"
+						oncomplete="denayDlg.show()" />
+					<p:confirmDialog id="acceptDialog"
+						message="You choose to accept connecting with the expert #{cbean.selectedUser.getFullName()}. Do you want to proceed?"
+						header="Accepting connection" severity="alert"
+						widgetVar="acceptDlg">
+
+						<p:commandButton id="aconfirm" value="Yes"
+							update="sugDialog,SwimMsg1" onclick="acceptDlg.hide()"
+							action="#{cbean.acceptConn()}" ajax="false" type="submit"
+							oncomplete="sugDialog.show()" styleClass="block">
+						</p:commandButton>
+						<p:commandButton id="adecline" value="No"
+							onclick="acceptDlg.hide()" type="button" />
+
+					</p:confirmDialog>
+
+					<p:confirmDialog id="denayDialog"
+						message="You choose to deny connecting with the expert #{cbean.selectedUser.getFullName()}. Do you want to proceed?"
+						header="Denying connection" severity="alert" widgetVar="denayDlg">
+
+						<p:commandButton id="dconfirm" value="Yes" update="SwimMsg1"
+							onclick="denayDlg.hide()" action="#{cbean.denayConn()}"
+							type="submit" ajax="false" styleClass="block"/>
+						<p:commandButton id="ddecline" value="No"
+							onclick="denayDlg.hide()" type="button" />
+					</p:confirmDialog>
+					<p:growl id="SwimMsg1" />
+				</p:column>
+			</p:dataTable>
+		</h:panelGrid>
+
+		<h:panelGrid>
+			<p:dataTable id="dataTableSuggestions" var="user"
+				rendered="#{cbean.suggConnList.size() > 0}"
+				value="#{cbean.suggConnList}" border="1" paginator="true" rows="5"
+				lazy="true"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15">
+				<f:facet name="header">  
+            					Connect with the following Experts?
+        						</f:facet>
+				<p:column>
+					<f:facet name="header">Name</f:facet>
+								#{user.name}
+								</p:column>
+				<p:column>
+					<f:facet name="header">Surname</f:facet>
+								#{user.surname} 
+								</p:column>
+				<p:column>
+					<f:facet name="header">Skills</f:facet>
+								#{user.SkillToString()} 
+								</p:column>
+				<p:column>
+					<p:commandButton value="connect"
+						action="#{cbean.setSelectedUser(user)}" update="connrequestDialog"
+						oncomplete="connrequest.show()" />
+
+					<p:confirmDialog id="connrequestDialog"
+						message="You choose to send connection request to the expert #{cbean.selectedUser.getFullName()}. Do you want to procced?"
+						header="Connection request" severity="alert"
+						widgetVar="connrequest">
+						<p:commandButton id="r_confirm" value="Yes" update="SwimMsg2"
+							onclick="connrequest.hide()" type="submit"
+							action="#{cbean.connectTo()}" styleClass="block"/>
+						<p:commandButton id="r_decline" value="No"
+							onclick="connrequest.hide()" type="button" />
+					</p:confirmDialog>
+					<p:growl id="SwimMsg2" />
+				</p:column>
+			</p:dataTable>
+		</h:panelGrid>
+
+		<p:growl id="SwimMsg" />
+		</p:panel>
+	</h:form>
+</div>
+        </div>
+        <div id="footer">
+           <ui:include src="/snippets/CommonFooter.xhtml"></ui:include>
+        </div>
+    </div> 
+    </body>
+</html>

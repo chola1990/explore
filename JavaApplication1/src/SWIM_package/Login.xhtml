@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head><link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/css/styles.css" /></h:head>
+	<h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
+	<h:outputScript library="js" name="blockui.js" target="head" />
+	<h:outputScript library="js" name="swimBlockUi.js" target="head" />
+<body> 
+    <div id="wrap">
+        <div id="header">
+        <ui:include src="/snippets/CommonHeader.xhtml"></ui:include>
+        </div>
+        <div id="inner-wrap">
+            <div id="content">
+	<div align="center">
+		
+	 <br></br><br></br><br></br>
+		<h:form method="post" id="login" onsubmit="document.getElementById('login').action='j_security_check';" prependId="false">
+	
+		<p:panel header="Login to SWIMv2" style="width: 350px;">
+		<h:panelGrid columns="2" cellpadding="2">
+				<p:outputLabel for="j_username" value="Username: " />
+				<p:inputText id="j_username" name="j_username" />
+				<p:outputLabel for="j_password" value="Password: " />
+				<p:password id="j_password" name="j_password"/>
+				<h:outputText value="" />
+				<h:panelGrid columns="1">					
+					<p:commandButton id="submit" value="Login" ajax="false" styleClass="block"/>					
+				</h:panelGrid>				
+			</h:panelGrid>
+		<h:outputLabel value="Invalid credential. Please try again." rendered='#{not empty param["Retry"]}' style="color:red" />		
+		<h:panelGrid columns="2" cellpadding="2">
+			<p:outputLabel for="register" value="New User ?" />
+			<h:outputLink id="register" value="Register.xhtml">
+				<h:outputText value="Register" />
+			</h:outputLink>
+			<p:outputLabel for="recoverLink" value="Forgot password ?" />		
+			<h:outputLink id="recoverLink" value="javascript:void(0)" onclick="dlg.show()">     
+    			<h:outputText value="Reset password" />
+			</h:outputLink> 
+			</h:panelGrid>
+			</p:panel>
+			<br />			  
+		</h:form>
+		<p:growl id="SwimMsg" showDetail="true" life="3000" /> 
+		<p:dialog id="dialog" header="Password Reset" widgetVar="dlg">  
+		    <h:form>
+		        <h:panelGrid columns="2" cellpadding="5">  
+		            <h:outputLabel for="resetemail" value="Email:" />  
+		            <p:inputText value="#{lbean.resetemail}" requiredMessage="Value is required"   
+		                    id="resetemail" required="true" label="Email:" validatorMessage="Invalid Email" >
+		            	<f:validateRegex pattern="[a-zA-Z0-9]+@[a-zA-Z]+.[a-zA-Z]{2,3}"></f:validateRegex>
+		            </p:inputText>  
+		                      
+		            <f:facet name="footer">  
+		                <p:commandButton id="recoverButton" value="Reset password" update=":SwimMsg"   
+		                    actionListener="#{lbean.reset}" oncomplete="dlg.hide()" />		                    	
+		            </f:facet>  
+		        </h:panelGrid>  		        
+		    </h:form>  
+		</p:dialog> 
+		</div>
+</div>
+        </div>
+        <div id="footer">
+           <ui:include src="/snippets/CommonFooter.xhtml"></ui:include>
+        </div>
+    </div> 
+    </body>
+</html>

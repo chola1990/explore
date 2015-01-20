@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<link type="text/css" rel="stylesheet"
+		href="#{request.contextPath}/resources/css/styles.css" />
+</h:head>
+<h:outputScript library="primefaces" name="jquery/jquery.js"
+	target="head" />
+<h:outputScript library="js" name="blockui.js" target="head" />
+<h:outputScript library="js" name="swimBlockUi.js" target="head" />
+<body>
+	<div id="wrap">
+		<div id="header">
+			<ui:include src="/snippets/CommonHeader.xhtml"></ui:include>
+		</div>
+		<div id="inner-wrap">
+			<div id="content">
+				<p:panel header="Welcome to Swim" id="mainPanel">
+					<h:form>
+						<h:panelGrid columns="3">
+							<p:autoComplete value="#{mainBean.selectSkill}" id="acSkill"
+								completeMethod="#{mainBean.completeSkill}" var="s"
+								itemLabel="#{s.name}" itemValue="#{s}"
+								converter="skillConverter" forceSelection="true"
+								styleClass="noBlock" />
+							<p:commandButton action="#{mainBean.search()}" value='search'
+								type="submit" ajax="false" styleClass="block" />
+							<p:watermark for="acSkill" value="Search by skill..." />
+						</h:panelGrid>
+					</h:form>
+					<h:form>
+						<h:panelGrid rendered="#{mainBean.listSearchedUsers.size() > 0}">
+							<p:dataTable id="dataTable" var="user"
+								value="#{mainBean.listSearchedUsers}" border="1"
+								paginator="true" rows="5" lazy="true"
+								paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,15">
+								<f:facet name="header">  
+            All Users  
+        </f:facet>
+								<p:column>
+									<f:facet name="header">Name</f:facet>
+				#{user.name}
+			</p:column>
+								<p:column>
+									<f:facet name="header">Surname</f:facet>
+				#{user.surname} 
+			</p:column>
+								<p:column>
+									<f:facet name="header">Skills</f:facet>
+				#{user.SkillToString()} 
+			</p:column>
+								<p:column>
+
+									<p:commandButton value="connect"
+										action="#{cbean.setSelectedUser(user)}"
+										update="connrequestDialog" oncomplete="connrequest.show()"
+										rendered="#{lbean.isLoged()}" />
+
+									<p:commandButton value="connect" onclick="confirmation.show()"
+										rendered="#{!lbean.isLoged()}" />
+
+									<p:confirmDialog id="connrequestDialog"
+										message="You choose to send connection request to the expert #{cbean.selectedUser.getFullName()}. Do you want to procced?"
+										header="Connection request" severity="alert"
+										widgetVar="connrequest">
+										<p:commandButton id="r_confirm" value="Yes" update="SwimMsg"
+											onclick="connrequest.hide()" type="submit"
+											action="#{cbean.connectTo()}" styleClass="block" />
+										<p:commandButton id="r_decline" value="No"
+											onclick="connrequest.hide()" type="button" />
+									</p:confirmDialog>
+
+									<p:confirmDialog id="confirmDialog"
+										message="To connect to any expert, you must first to login. Do you want to login?"
+										header="User not registerd" severity="alert"
+										widgetVar="confirmation">
+										<p:commandButton id="confirm" value="Yes" update="SwimMsg"
+											onclick="confirmation.hide()" action="user-login"
+											styleClass="block" />
+										<p:commandButton id="decline" value="No"
+											onclick="confirmation.hide()" type="button" />
+									</p:confirmDialog>
+
+									<p:growl id="SwimMsg" />
+								</p:column>
+							</p:dataTable>
+						</h:panelGrid>
+
+					</h:form>
+				</p:panel>
+			</div>
+		</div>
+		<div id="footer">
+			<ui:include src="/snippets/CommonFooter.xhtml"></ui:include>
+		</div>
+	</div>
+</body>
+</html>

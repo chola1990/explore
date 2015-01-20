@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head><link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/css/styles.css" /></h:head>
+
+<body> 
+    <div id="wrap">
+        <div id="header">
+        <ui:include src="/snippets/CommonHeader.xhtml"></ui:include>
+        </div>
+        <div id="inner-wrap">
+            <div id="content">
+	<h:form>
+		
+<p:panel header="Pending Connection Requests">
+		<h:panelGrid rendered="#{cbean.connPendingList.size() > 0}">
+			<p:dataTable id="dataTable" var="user"
+				value="#{cbean.connPendingList}" border="1" paginator="true"
+				rows="5" lazy="true"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15">
+				<f:facet name="header">  
+            Connections Pendings
+        </f:facet>
+				<p:column>
+					<f:facet name="header">Name</f:facet>
+				#{user.name}
+			</p:column>
+				<p:column>
+					<f:facet name="header">Surname</f:facet>
+				#{user.surname} 
+			</p:column>
+				<p:column>
+					<f:facet name="header">Skills</f:facet>
+				#{user.SkillToString()} 
+			</p:column>
+			</p:dataTable>
+		</h:panelGrid>
+</p:panel>		
+	</h:form>
+</div>
+        </div>
+        <div id="footer">
+           <ui:include src="/snippets/CommonFooter.xhtml"></ui:include>
+        </div>
+    </div> 
+    </body>
+</html>

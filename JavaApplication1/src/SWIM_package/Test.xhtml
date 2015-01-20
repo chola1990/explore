@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head></h:head>
+<h:body align="center">
+	<h:form>
+		<p:growl id="msgs" />
+		<p:outputLabel for="usrName" value="User principal: " /> 
+		<p:outputLabel id='usrName' value="#{lbean.getPrincipalName()}" />
+		<br />
+		<p:outputLabel for="usrRole" value="Is ADMIN ? " />
+		<p:outputLabel id='usrRole' value="#{lbean.isUserAdmin()}" />
+		<br />
+		<p:commandButton action="#{lbean.logout}" value='Log out' type="submit" ajax="false" />			
+	</h:form>
+	<ui:include src="/snippets/footer-full.xhtml" />
+</h:body>
+</html>

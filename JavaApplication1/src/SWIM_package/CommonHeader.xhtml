@@ -1,0 +1,48 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
+	<h:outputScript library="js" name="blockui.js" target="head" />
+	<h:outputScript library="js" name="swimBlockUi.js" target="head" />
+	
+	
+	<h:form>
+	
+	<p:megaMenu activeIndex="0">
+	
+		<p:menuitem value="Home" url="/pages/public/Main.xhtml" onclick="blockUI()"
+			icon="ui-icon-home" />
+		<p:menuitem value="Profile and Skills" rendered="#{lbean.isLoged() and !lbean.isUserAdmin()}" onclick="blockUI()"
+			url="/pages/protected/user/Profile.xhtml" icon="ui-icon-wrench" />
+			
+			<p:menuitem value="Profile" rendered="#{lbean.isUserAdmin()}" onclick="blockUI()"
+			url="/pages/protected/user/Profile.xhtml" icon="ui-icon-wrench" />
+		<p:submenu label="Connections" rendered="#{lbean.isLoged() and !lbean.isUserAdmin()}"
+			url="/pages/protected/user/ViewConnections.xhtml" icon="ui-icon-person">
+			<p:column>
+				<p:submenu style="display:none">
+					<p:menuitem value="View Connections" url="/pages/protected/user/ViewConnections.xhtml" onclick="blockUI()"/>
+					<p:menuitem value="View Pendings" url="/pages/protected/user/ViewPendingRequests.xhtml" onclick="blockUI()"/>
+					<p:menuitem value="View Requests" url="/pages/protected/user/ViewConnectionRequests.xhtml" onclick="blockUI()"/>
+				</p:submenu>
+			</p:column>
+		</p:submenu>
+		<p:submenu label="Skills" rendered="#{lbean.isUserAdmin()}"
+			url="/pages/protected/admin/ViewSkills.xhtml" icon="ui-icon-gear">
+			<p:column>
+				<p:submenu style="display:none">
+					<p:menuitem value="View Skills" url="/pages/protected/admin/ViewSkills.xhtml" onclick="blockUI()"/>
+					<p:menuitem value="View Requests" url="/pages/protected/admin/ViewSkillRequests.xhtml" onclick="blockUI()"/>
+				</p:submenu>
+			</p:column>
+		</p:submenu>
+		<p:menuitem value="Register" url="/pages/public/Register.xhtml" rendered="#{!lbean.isLoged()}" onclick="blockUI()"/>
+		<p:menuitem value="Login" url="/pages/protected/user/ViewConnections.xhtml" rendered="#{!lbean.isLoged()}" onclick="blockUI()"/>
+		<p:menuitem value="Logout" action="#{lbean.logout()}" rendered="#{lbean.isLoged()}" icon="ui-icon-extlink" onclick="blockUI()"/>
+		<p:menuitem styleClass="profile_info" value="#{lbean.getUserFullName()}" rendered="#{lbean.isLoged()}" ajax="false" onclick="return false;"/>	
+	</p:megaMenu>
+	</h:form>
+</ui:composition>

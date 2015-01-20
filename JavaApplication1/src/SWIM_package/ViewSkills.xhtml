@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<link type="text/css" rel="stylesheet"
+		href="#{request.contextPath}/resources/css/styles.css" />
+</h:head>
+<h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
+<h:outputScript library="js" name="blockui.js" target="head" />
+<h:outputScript library="js" name="swimBlockUi.js" target="head" />
+
+<body>
+	<div id="wrap">
+		<div id="header">
+			<ui:include src="/snippets/CommonHeader.xhtml"></ui:include>
+		</div>
+		<div id="inner-wrap">
+			<div id="content">			
+					<h:form id="main">
+					<p:growl id="SwimMsg" />
+					<p:panel header="Skill Requests in SWIM">						
+						<p:fieldset>
+							<h:panelGrid rendered="#{srbean.skillPendingList.size() > 0}"
+								id="skillGrid">
+								<p:dataTable id="dataTable" var="skill"
+									value="#{srbean.skillPendingList}" border="1" paginator="true" rows="5" editable="true"
+									lazy="true" emptyMessage="There are no skill requests"
+									paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="5,10,15">
+	
+									<f:facet name="header">  
+							            Skill Requests 
+							        </f:facet>	
+							        
+							        <p:column>
+									<f:facet name="header">Skill</f:facet>
+										#{skill.name}
+									</p:column>
+									<p:column>
+									<f:facet name="header">User</f:facet>
+										#{skill.usrid.name} 
+									</p:column>		
+									<p:column style="width:150px">  
+							            <p:commandButton value="Accept" icon="ui-icon-check" 
+										update=":main:SwimMsg" action="#{srbean.acceptSkill(skill)}"
+										type="submit" ajax="false" styleClass="block"  />
+							        </p:column >
+							        <p:column style="width:150px">
+							            <p:commandButton value="Reject" icon="ui-icon-closethick"
+											action="#{srbean.setSelectedSkill(skill)}"
+											update="rejectDialog" oncomplete="rejectconfirmation.show()" />									
+										<p:confirmDialog id="rejectDialog"
+											message="You have chosen to reject the skill #{srbean.selectedSkill.getName()}. Do you want to proceed?"
+											header="Reject Skill" severity="alert"
+											widgetVar="rejectconfirmation">
+											<p:commandButton id="confirm" value="Yes" update=":main:SwimMsg"
+												onclick="rejectconfirmation.hide()" action="#{srbean.rejectSkill()}"
+												type="submit" ajax="false" styleClass="block" />
+											<p:commandButton id="decline" value="No"
+												onclick="rejectconfirmation.hide()" type="button" ajax="false" />
+										</p:confirmDialog>	
+							        </p:column>  
+								</p:dataTable>
+							</h:panelGrid>
+						</p:fieldset>						
+					</p:panel>					
+					<br></br>						
+					</h:form>
+			</div>
+		</div>
+		<div id="footer">
+			<ui:include src="/snippets/CommonFooter.xhtml"></ui:include>
+		</div>
+	</div>
+</body>
+</html>

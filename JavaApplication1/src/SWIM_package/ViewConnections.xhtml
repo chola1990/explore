@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/css/styles.css" />
+	<h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
+	<h:outputScript library="js" name="blockui.js" target="head" />
+	<h:outputScript library="js" name="swimBlockUi.js" target="head" />
+<script type="text/javascript">
+function setRating(value) {
+   var elem = document.getElementById('hdnUsrRate');
+   elem.value = value;
+   return false;
+}
+</script>
+</h:head>
+<body>
+	<div id="wrap">
+		<div id="header">
+			<ui:include src="/snippets/CommonHeader.xhtml"></ui:include>
+		</div>
+		<div id="inner-wrap">
+			<div id="content">
+				<h:form id="main">
+					<p:panel header="Connections" id="mainPanel">
+						<p:fieldset>
+							<p:accordionPanel activeIndex="-1">
+								<p:tab title="Search Connections">
+									<h:panelGrid columns="4">
+										<h:outputLabel for='sName' value='Name' />
+										<p:inputText id='sName' value='#{cbean.sUser.name}' />
+
+										<h:outputLabel for='sEmail' value='Email' />
+										<p:inputText id='sEmail' value='#{cbean.sUser.email}' />
+
+										<h:outputLabel for='sSurname' value='Surname' />
+										<p:inputText id='sSurname' value='#{cbean.sUser.surname}' />
+
+										<h:outputLabel for='sCity' value='City' />
+										<h:selectOneMenu id="sCity" value="#{cbean.sUser.city}"
+											converter="#{nomcityConverter}">
+											<f:selectItems value="#{commonBean.cities}" var="city"
+												itemLabel="#{city.name}" itemValue="#{city.name}" />
+										</h:selectOneMenu>
+
+										<h:outputLabel for='sAddress' value='Address' />
+										<p:inputText id='sAddress' value='#{cbean.sUser.address}' />
+
+										<h:outputLabel for='sCountry' value='Country' />
+										<h:selectOneMenu id="sCountry" value="#{cbean.sUser.country}"
+											converter="#{nomcountryConverter}">
+											<f:selectItems value="#{commonBean.countries}" var="country"
+												itemLabel="#{country.name}" itemValue="#{country.name}" />
+										</h:selectOneMenu>
+
+										<h:outputLabel for='sPhone' value='Phone' />
+										<p:inputText id='sPhone' value='#{cbean.sUser.phone}' />
+
+										<h:outputLabel for='sSkill' value='Skills' />
+										<p:autoComplete value="#{cbean.selectSkill}" id="sSkill"
+											completeMethod="#{mainBean.completeSkill}" var="s"
+											itemLabel="#{s.name}" itemValue="#{s}"
+											converter="skillConverter" forceSelection="true" />
+
+									</h:panelGrid>
+									<br />
+									<p:commandButton value="clear" action="#{cbean.clear()}"
+										type="submit" ajax="false" styleClass="block" />
+									<p:commandButton value="search" action="#{cbean.search()}"
+										type="submit" ajax="false" styleClass="block" />
+								</p:tab>
+							</p:accordionPanel>
+						</p:fieldset>
+						<br />
+						<br />
+						<h:panelGrid rendered="#{cbean.connList.size() > 0}" id="connGrid">
+							<p:dataTable id="dataTable" var="user" value="#{cbean.connList}"
+								border="1" paginator="true" rows="5" lazy="true"
+								paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,15">
+
+								<f:facet name="header">  
+            Connections  
+        </f:facet>
+								<p:column>
+									<f:facet name="header">Name</f:facet>
+				#{user.name}
+			</p:column>
+								<p:column>
+									<f:facet name="header">Surname</f:facet>
+				#{user.surname} 
+			</p:column>
+								<p:column>
+									<f:facet name="header">Email</f:facet>
+				#{user.email} 
+			</p:column>
+								<p:column>
+									<f:facet name="header">Phone number</f:facet>
+				#{user.phone} 
+			</p:column>
+								<p:column>
+									<f:facet name="header">Address</f:facet>
+				#{user.address} 
+			</p:column>
+								<p:column>
+									<f:facet name="header">City</f:facet>
+				#{user.city.name} 
+			</p:column>
+								<p:column>
+									<f:facet name="header">Country</f:facet>
+				#{user.country.name} 
+			</p:column>
+								<p:column>
+									<f:facet name="header">Skills</f:facet>
+				#{user.SkillToString()} 
+			</p:column>
+								<p:column>
+									<p:commandButton value="rate"
+										action="#{cbean.setSelectedUser(user)}" update="rateDialog"
+										oncomplete="rateDlg.show()" />
+									<p:commandButton value="remove"
+										action="#{cbean.setSelectedUser(user)}" update="confirmDialog"
+										oncomplete="confirmation.show()" />
+
+									<p:dialog id="rateDialog" width="300"
+										header="Provide rate for the expert #{cbean.selectedUser.getFullName()} ?"
+										modal="true" widgetVar="rateDlg">
+										<p:selectOneMenu id="userRate" label="Choose rate"
+											widgetVar="selRate" value="#{cbean.userRating}"
+											converter="#{nomratingConverter}"
+											onchange="setRating(this.value)">
+											<f:selectItems value="#{commonBean.raitings}" var="r"
+												itemLabel="#{r.name}" itemValue="#{r}" />
+										</p:selectOneMenu>
+										<f:facet name="footer">
+											<p:commandButton id="rconfirm" value="rate"
+												onclick="rateDlg.hide()" action="#{cbean.rateUser()}"
+												type="submit" ajax="false" styleClass="block" />
+											<p:commandButton id="rdecline" value="cancel"
+												onclick="rateDlg.hide()" type="button" />
+										</f:facet>
+									</p:dialog>
+
+									<p:confirmDialog id="confirmDialog"
+										message="You choose to remove the connection #{cbean.selectedUser.getFullName()}. Do you want to proceed?"
+										header="Removing connection" severity="alert"
+										widgetVar="confirmation">
+										<p:commandButton id="confirm" value="Yes" update="SwimMsg1"
+											onclick="confirmation.hide()" action="#{cbean.removeConn()}"
+											type="submit" ajax="false" styleClass="block" />
+										<p:commandButton id="decline" value="No"
+											onclick="confirmation.hide()" type="button" />
+									</p:confirmDialog>
+									<p:growl id="SwimMsg1" />
+								</p:column>
+							</p:dataTable>
+						</h:panelGrid>
+						<br></br>
+						<br></br>
+						<br></br>
+						<p:carousel id="carousel" value="#{cbean.suggConnListAll}"
+							var="user" rendered="#{cbean.connList.size() > 0}"
+							headerText="Suggested Experts">
+							<h:panelGrid rendered="#{cbean.connList.size() > 0}">
+								<h:outputText id="name" value="#{user.getFullName()}" />
+								<h:outputText id="skills" value="#{user.SkillToString()}" />
+								<p:commandLink id="clConnect" value="connect"
+									action="#{cbean.setSuggUser(user)}" update="connDialog"
+									oncomplete="connDlg.show()" />
+							</h:panelGrid>
+							<p:confirmDialog id="connDialog"
+								message="You choose to connect with the suggested connection #{cbean.suggUser.getFullName()}. Do you want to proceed?"
+								header="Adding connection" severity="alert" widgetVar="connDlg">
+								<p:commandButton id="cdconfirm" value="Yes" update="SwimMsgConn"
+									onclick="connDlg.hide()" action="#{cbean.connectToSugg()}"
+									type="submit" ajax="false" styleClass="block" />
+								<p:commandButton id="cddecline" value="No"
+									onclick="connDlg.hide()" type="button" />
+							</p:confirmDialog>
+							<p:growl id="SwimMsgConn" />
+						</p:carousel>
+						<p:growl id="SwimMsg" />
+						<input type="hidden" id="hdnUsrRate" name="hdnUsrRate" value="" />
+					</p:panel>
+
+				</h:form>
+			</div>
+		</div>
+		<div id="footer">
+			<ui:include src="/snippets/CommonFooter.xhtml"></ui:include>
+		</div>
+	</div>
+</body>
+</html>

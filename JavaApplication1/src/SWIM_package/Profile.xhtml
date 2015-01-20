@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<link type="text/css" rel="stylesheet"
+		href="#{request.contextPath}/resources/css/styles.css" />
+</h:head>
+<h:outputScript library="primefaces" name="jquery/jquery.js"
+	target="head" />
+<h:outputScript library="js" name="blockui.js" target="head" />
+<h:outputScript library="js" name="swimBlockUi.js" target="head" />
+<body>
+	<div id="wrap">
+		<div id="header">
+			<ui:include src="/snippets/CommonHeader.xhtml"></ui:include>
+		</div>
+		<div id="inner-wrap">
+			<div id="content">
+				<p:growl id="SwimMsg" life="3000" />
+				<table style="width: 100%">
+					<tr>
+						<td style="width: 48%"><p:panel header="Profile">
+								<h:form id="profile_skills" >
+
+
+
+									<h:panelGrid columns='3' columnClasses="column" cellpadding="8">
+
+										<p:rating  id="usrRating" value="#{userBean.rating}" stars="5"
+											readonly="true" rendered="#{lbean.isLoged() and !lbean.isUserAdmin()}"/>
+
+										<h:outputText  for='usrRatingPeople'
+											value="Rated by #{userBean.count} people" rendered="#{lbean.isLoged() and !lbean.isUserAdmin()}"/>
+
+										<p:message for="usrName" />
+
+										<h:outputLabel for='usrName' value='Name:' />
+										<p:inplace id='usrName'>
+											<p:inputText value='#{userBean.currentUser.name}' />
+										</p:inplace>
+
+										<p:message for="usrName" />
+
+										<h:outputLabel for='usrSurname' value='Surname:' />
+										<p:inplace id='usrSurname'>
+
+											<p:inputText value='#{userBean.currentUser.surname}' />
+										</p:inplace>
+
+										<p:message for="usrSurname" />
+
+										<h:outputLabel for='usrAddr' value='Address:' />
+										<p:inplace id='usrAddr'>
+											<p:inputText value='#{userBean.currentUser.address}' />
+										</p:inplace>
+										<p:message for="usrAddr" />
+
+										<h:outputLabel for='usrPhone' value='Phone:' />
+										<p:inplace id='usrPhone'>
+											<p:inputText value='#{userBean.currentUser.phone}'
+												
+												validatorMessage="Invalid Phone Number">
+												<f:validateRegex pattern="[0-9]*"></f:validateRegex>
+											</p:inputText>
+
+
+										</p:inplace>
+										<p:message for="usrPhone" />
+
+										<h:outputLabel for='usrCountry' value='Country:' />
+										<p:inplace id="usrCountry"
+											label="#{userBean.currentUser.country.getName()}"
+											converter="#{nomcountryConverter}" effectSpeed="fast"
+											event="click">
+											<p:selectOneMenu value="#{userBean.currentUser.country}"
+												converter="#{nomcountryConverter}">
+												
+												<f:selectItems value="#{commonBean.countries}" var="country"
+													itemLabel="#{country.name}" itemValue="#{country.name}" />
+													
+										</p:selectOneMenu>
+										</p:inplace>
+										<p:message for="usrCountry" />
+
+										<h:outputLabel for='usrCity' value='City:' />
+										<p:inplace id="usrCity"
+											label="#{userBean.currentUser.city.getName()}"
+											converter="#{nomcityConverter}" effectSpeed="fast"
+											event="click">
+											<p:selectOneMenu value="#{userBean.currentUser.city}"
+												converter="#{nomcityConverter}">
+													
+												<f:selectItems value="#{commonBean.cities}" var="city"
+													itemLabel="#{city.name}" itemValue="#{city.name}" />
+												
+											</p:selectOneMenu>
+										</p:inplace>
+										<p:message for="usrCity" />
+
+
+										<br></br>
+										<p:commandButton action='#{userBean.updateUser()}'
+											value='update' type="submit" ajax="false" styleClass="block" />
+									</h:panelGrid>
+								</h:form>
+								<br></br>
+								<br></br>
+								<h:form id="change_passwd">
+									<p:fieldset legend="Change Password" toggleable="true"
+										toggleSpeed="500" collapsed="true">
+										<p:growl id="SwimMsg" life="3000" />
+
+										<h:panelGrid columns="3">
+											<h:outputLabel for="oldpwd" value="Old Password: *" />
+											<p:password id="oldpwd" value="#{userBean.oldpwd}"
+												label="Old Password" />
+											<p:message for="oldpwd" />
+											<h:outputLabel for="newpwd" value="New Password: *" />
+											<p:password id="newpwd" value="#{userBean.newpwd}"
+												label="New Password" feedback="true">
+											</p:password>
+											<p:message for="newpwd" />
+										</h:panelGrid>
+										<p:commandButton action='#{userBean.updatePassword()}'
+											value='update' type="submit" ajax="false" styleClass="block" />
+									</p:fieldset>
+
+
+								</h:form>
+							</p:panel></td>
+						<td style="width: 48%"><p:panel  rendered="#{!lbean.isUserAdmin()}" header="Skills">
+
+								
+								<h:outputLabel  value="Your skills are checked, and all on top. Select in this list to add skills to your profile" />
+								
+							<br/>
+								<h:form id="form">
+
+									<p:dataList
+										style="background: none;
+        								font-family: cursive;
+        								border: none;
+        								background-image: none;"
+										value="#{userBean.allSkills}" var="skill" id="s"
+										paginator="true" rows="10" effectSpeed="fast"
+										paginatorTemplate="{PreviousPageLink} {CurrentPageReport} {NextPageLink} {RowsPerPageDropdown}"
+										rowsPerPageTemplate="10,15,20" type="none"
+										converter="#{skillConverter}">
+										<p:selectBooleanCheckbox value="#{skill.selected}" ></p:selectBooleanCheckbox>
+										<h:outputText value="#{skill.name}" style="margin-left:20px" />
+										<br />
+									</p:dataList>
+									<p:commandButton action='#{userBean.addSkills()}'
+										value="Save your skills" title="Save your skills"
+										type="submit" ajax="false" styleClass="block">
+									</p:commandButton>
+
+								</h:form>
+								<br></br>
+
+
+								<h:form id="newskill">
+									<p:fieldset legend="Send Request for New Skill"
+										toggleable="true" toggleSpeed="500" collapsed="true">
+										<p:ajax event="toggle" />
+										<p:growl id="SwimMsg" life="3000" />
+										<h:panelGrid columns="3">
+											<h:outputLabel value='Search and Send' />
+											<p:inputText value="#{userBean.newskill}" id="s" />
+											<p:commandButton
+												action="#{userBean.sendRequestForNewSkill()}" value='Send'
+												type="submit" ajax="false" styleClass="block" />
+
+										</h:panelGrid>
+									</p:fieldset>
+								</h:form>
+								<br />
+							</p:panel></td>
+					</tr>
+				</table>
+
+
+
+
+
+
+
+			</div>
+		</div>
+		<div id="footer">
+			<ui:include src="/snippets/CommonFooter.xhtml"></ui:include>
+		</div>
+	</div>
+</body>
+</html>
