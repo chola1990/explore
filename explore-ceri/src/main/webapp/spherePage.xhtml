@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>MeteoCal Log In</title>
+        <link rel="stylesheet"
+              href="${facesContext.externalContext.requestContextPath}/css/spherePageStyle.css" type="text/css" />
+    </h:head>
+    <h:body>
+        <f:view>
+            <h:form id="main_form">
+                
+                <div id="left_div">
+                    <p:panelGrid columns="2" styleClass="navigation_bar_class" >
+                        <p:commandButton value="Previous Sphere"
+                                         actionListener="#{sphereBean.previousSphere()}"
+                                         update="sphere_container"
+                                         styleClass="navigation_left_button_class"/>
+                        <p:commandButton value="Next Sphere" 
+                                         actionListener="#{sphereBean.nextSphere()}"
+                                         update="sphere_container"
+                                         styleClass="navigation_right_button_class"/>
+                     </p:panelGrid>
+                     <h:outputText  id="sphere_container" value="#{sphereBean.current.htmlObject}"
+                              escape="false" />
+                
+                    <div class="logo_container">
+
+                    </div>
+                
+                    
+                </div>
+                <div id="right_div">
+                    <p:dataTable var="sphere" value="#{sphereLazyView.lazyModel}" paginator="true" 
+                                 paginatorPosition="top"
+                                 paginatorTemplate="{PreviousPageLink}  {NextPageLink}" rows="10"
+                                 selectionMode="single" selection="#{sphereLazyView.selectedSphere}" 
+                                 id="sphereList" lazy="true"
+                                 styleClass="sphere_list_class">
+                        <p:ajax event="rowSelect" listener="#{sphereLazyView.onRowSelect}" 
+                                 update=":main_form:sphere_container"
+                                 />
+                        <p:column headerText="Name" sortBy="#{sphere.name}" filterBy="#{sphere.name}" >
+                            <h:outputText value="#{sphere.name}" />
+                        </p:column>
+
+                    </p:dataTable>
+                </div>
+                
+               
+                
+            </h:form>
+        </f:view>
+    </h:body>
+</html>
+

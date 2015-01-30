@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>MeteoCal Change Password</title>
+        <link rel="stylesheet"
+              href="${facesContext.externalContext.requestContextPath}/css/changePasswordPageStyle.css" type="text/css" />
+    </h:head>
+    <h:body>
+        <h:form id="changePassword_form">
+            <div class="outter_container">
+                <p:panel styleClass="changePassword_header">
+                    <p:outputLabel value="Change Password" 
+                                   style="font-size: 1.6em;"
+                                   styleClass="changePassword_meteocal"/>
+                </p:panel>
+                <h:panelGrid id="changePassword_panel" columns="2"
+                             styleClass="inner_container">
+                    <h:outputLabel value="Email:" for="emailInput" />
+                    <p:inputText id="emailInput" validator="#{changePasswordBean.validateEmail}"
+                                 value="#{changePasswordBean.email}" title="Email"
+                                 requiredMessage="Error : 'Email not entered. Email is required for recovering Your password.'"
+                                 required="true" >
+                        <p:ajax event="blur" process="changePassword_form" 
+                                update=":changePassword_form:messages"
+                                listener="#{changePasswordBean.checkAllDataOK()}"  />
+                    </p:inputText>
+
+                    <h:outputLabel value="Password:" for="passwordInput" />
+                    <p:password id="passwordInput" validator="#{changePasswordBean.validatePassword}"
+                                 value="#{changePasswordBean.password}" title="Password"
+                                 requiredMessage="Error : 'Password not entered. Password is required for changing the old password!'"
+                                 required="true" >
+                        <p:ajax event="blur" process=":changePassword_form:passwordInput" 
+                                update=":changePassword_form:messages
+                                :changePassword_form:rePasswordInput"
+                                listener="#{changePasswordBean.checkAllDataOK()}"  />
+                    </p:password>
+
+                    <h:outputLabel value="Retype Password:" for="rePasswordInput" />
+                    <p:password id="rePasswordInput" validator="#{changePasswordBean.validateRePassword}"
+                                 disabled="#{empty changePasswordBean.password}" required="true"
+                                 requiredMessage="Error : 'Repeated password not entered. Repeated password is required for changing the old password!'"
+                                 value="#{changePasswordBean.re_pasword}" title="Retype Password:" >
+                        <p:ajax event="blur" process=":changePassword_form:rePasswordInput" 
+                                update=":changePassword_form:messages
+                                :changePassword_form:changePasswordRequestButton"
+                                listener="#{changePasswordBean.checkAllDataOK()}"        />
+                    </p:password>
+                    
+                    <p:link outcome="logInPage?faces-redirect=true" value="Log In"/>
+                    
+                    <p:commandButton id="changePasswordRequestButton" value="Request Password Change" 
+                                 styleClass="changePassword_button" 
+                                 disabled="#{not(changePasswordBean.emailValid and 
+                                             changePasswordBean.passwordValid ) }"
+                                             action="#{changePasswordBean.sendRandomCode()}" />
+
+                    <h:outputLabel value="Copy Code here:" for="reCodeInput" 
+                                  rendered="#{changePasswordBean.codeSent}" />
+                    <p:inputText id="reCodeInput" validator="#{changePasswordBean.validateReCode}"
+                                 value="#{changePasswordBean.re_code}" title="Copy Code here:"
+                                 rendered="#{changePasswordBean.codeSent}">
+                        <f:ajax event="blur" render=":parent_container :parent_form :data_panel"/>
+                    </p:inputText>
+
+                    
+
+                    
+                </h:panelGrid>
+                <p:commandButton id="changePasswordSubmitButton" value="Submit code"
+                                 disabled="#{not changePasswordBean.codeValid}"
+                                 styleClass="change_password_submit_button_class">
+                        <f:ajax event="click"  render=":parent_container :parent_form :data_panel"  
+                                execute=":parent_form" listener="#{changePasswordBean.changePassword()}" />
+                </p:commandButton>
+            </div>
+            <p:growl id="messages" sticky="true" autoUpdate="true" />
+        </h:form>
+    </h:body>
+</html>
+

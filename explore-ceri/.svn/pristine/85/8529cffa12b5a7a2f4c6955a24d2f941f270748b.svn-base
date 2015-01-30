@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>MeteoCal Sign Up</title>
+        <link rel="stylesheet"
+              href="${facesContext.externalContext.requestContextPath}/css/registerPageStyle.css" type="text/css" />
+    </h:head>
+    <h:body>
+        <h:form id="register_form">
+            <div class="outter_container">
+                <p:panel styleClass="register_header">
+                    <p:outputLabel value="MeteoCal" 
+                                   style="font-size: 1.7em;"
+                                   styleClass="register_meteocal"/>
+                </p:panel>
+                <p:panelGrid id="register_panel" columns="2">
+                    <p:outputLabel value="Name:" for="nameInput" />
+                    <p:inputText id="nameInput" required="true"
+                                 validatorMessage="Error: 'Name can only contain '-',' ' and letters.'"
+                                 requiredMessage="Error : 'Name not entered. Name is required for reqistration!'"
+                                 value="#{registerBean.name}" title="Name" >
+                        <p:ajax event="blur" process=":register_form:nameInput" 
+                                update=":register_form:messages" 
+                                listener="#{registerBean.checkAllDataOK()}"/>
+                        <f:validateRegex pattern="^[a-zA-Z\s\-]+$" />
+                    </p:inputText>
+                    
+                    <p:outputLabel value="Surname:" for="surnameInput" />
+                    <p:inputText id="surnameInput" required="true"
+                                 validatorMessage="Error: 'Surname can only contain '-',' ' and letters.'"
+                                 requiredMessage="Error : 'Surname not entered. Surname is required for reqistration!'"
+                                 value="#{registerBean.surname}" title="Surname" >
+                        <p:ajax event="blur" process=":register_form:surnameInput" 
+                                update=":register_form:messages"
+                                listener="#{registerBean.checkAllDataOK()}" />
+                        <f:validateRegex pattern="^[a-zA-Z\s\-]+$" />
+                    </p:inputText>
+                    
+                    <p:outputLabel value="Username:" for="usernameInput" />
+                    <p:inputText id="usernameInput" validator="#{registerBean.validateUsername}"
+                                 value="#{loginBean.username}" title="Username"
+                                 requiredMessage="Error : 'Username not entered. Username is required for reqistration!'"
+                                 required="true">
+                        <p:ajax event="blur" process=":register_form:usernameInput"
+                                update=":register_form:messages"
+                                listener="#{registerBean.checkAllDataOK()}" />
+                    </p:inputText>
+                    
+                    <p:outputLabel value="Email:" for="emailInput" />
+                    <p:inputText id="emailInput" validator="#{registerBean.validateEmail}"
+                                 value="#{registerBean.email}" title="Email" 
+                                 requiredMessage="Error : 'Email not entered. Email is required for reqistration!'"
+                                 required="true">
+                        <p:ajax event="blur" process=":register_form:emailInput" 
+                                update=":register_form:messages"
+                                listener="#{registerBean.checkAllDataOK()}"  />
+                    </p:inputText>
+                    
+                    <p:outputLabel value="Password:" for="passwordInput" />
+                    <p:password id="passwordInput" required="true"
+                                 requiredMessage="Error : 'Password not entered. Password is required for reqistration!'"
+                                 value="#{registerBean.password}" title="Password" >
+                        <p:ajax event="blur" process=":register_form:passwordInput" 
+                                update=":register_form:messages
+                                        :register_form:rePasswordInput"
+                                        listener="#{registerBean.checkAllDataOK()}"  />
+                    </p:password>
+                    
+                    <p:outputLabel value="Retype Password:" for="rePasswordInput" />
+                    <p:password id="rePasswordInput" validator="#{registerBean.validateRePassword}"
+                                 disabled="#{empty registerBean.password}" required="true"
+                                 requiredMessage="Error : 'Password not entered. Password is required for reqistration!'"
+                                 value="#{registerBean.re_pasword}" title="Retype Password:" >
+                        <p:ajax event="blur" process=":register_form:rePasswordInput" 
+                                update=":register_form:messages
+                                        :register_form:registerButton"
+                                        listener="#{registerBean.checkAllDataOK()}"        />
+                    </p:password>
+   
+                </p:panelGrid>
+                <p:link outcome="logInPage?faces-redirect=true" value="Log In"/>
+                <p:messages id="messages" closable="true" />
+                
+                <p:commandButton id="registerButton" value="Register" styleClass="register_button" 
+                                 disabled="#{not(registerBean.emailValid and 
+                                             registerBean.passwordValid and 
+                                             registerBean.usernameValid) }"
+                                 action="#{registerBean.register()}"/>
+            </div>
+        </h:form>
+    </h:body>
+</html>
+

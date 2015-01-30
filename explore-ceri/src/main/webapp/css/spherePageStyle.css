@@ -1,0 +1,147 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 28-Jan-2015, 21:36:17
+    Author     : Milos
+*/
+
+html { 
+  background: url(../images/bkg_expo_2.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+#left_div{
+    float:left;
+    width: 83%;
+}
+
+#right_div{
+    float: right;
+    width: 15%;
+}
+
+.logo_container{
+    background: url(../images/expo_logo_2.png) no-repeat;
+    opacity: 0.6;
+    height: 80px;
+    width: 300px;
+    position: fixed;
+    left: 5px;
+    bottom: 5px;
+}
+
+.sphere_list_class{
+    margin: 1px;
+    padding: 3px;
+    width: 100%;
+    height: 100%;
+    float: right;
+}
+
+.sphere_list_class td{
+    height: 47px !important;
+    background-color: rgba(3, 193, 237, 0.61);
+    color: #FFF !important;
+}
+
+.ui-inputfield, .ui-widget-content .ui-inputfield, .ui-widget-header .ui-inputfield{
+    background-color: rgba(255, 255, 255, 0.45);
+}
+
+.ui-widget-content{
+    background: none;
+}
+
+.ui-datatable thead th, .ui-datatable tfoot td{
+    background-color: rgba(232, 204, 253, 0.78);
+}
+
+.ui-paginator{
+    background-color: rgba(243, 201, 41, 0.53);
+}
+
+.ui-datatable table{
+    border-collapse: separate;
+}
+
+
+
+.navigation_bar_class{
+    width: 100%;
+    height: 50px !important;
+    margin: 5px;
+    padding: 5px;
+    background-color: rgba(11, 193, 240, 0.28);
+}
+
+.navigation_bar_class td{
+    width: 50%;
+}
+
+iframe{
+    margin: 5px;
+    padding: 5px;
+    width: 99%;
+    height: 605px;
+    float: left;
+}
+
+.navigation_left_button_class{
+    width: 50%;
+    float: left;
+    -webkit-box-shadow:rgba(0,0,0,0.2) 0 1px 0 0 !important;
+    -moz-box-shadow:rgba(0,0,0,0.2) 0 1px 0 0 !important;
+    box-shadow:rgba(0,0,0,0.2) 0 1px 0 0 !important;
+    color:#333 !important;
+    background-color: rgba(243, 201, 41, 0.53) !important;
+    border-radius:5px !important;
+    -moz-border-radius:5px !important;
+    -webkit-border-radius:5px !important;
+    border:none !important;
+    font-family:'Helvetica Neue',Arial,sans-serif !important;
+    font-size:16px !important;
+    font-weight:700 !important;
+    height: 100% !important;
+    width: 100% !important;
+    padding:4px 16px;
+    text-shadow:#FE6 0 1px !important; 
+    background-image: url('') !important;
+    text-align: left;
+}
+
+.navigation_right_button_class{
+    width: 50%;
+    float: right;
+    -webkit-box-shadow:rgba(0,0,0,0.2) 0 1px 0 0 !important;
+    -moz-box-shadow:rgba(0,0,0,0.2) 0 1px 0 0 !important;
+    box-shadow:rgba(0,0,0,0.2) 0 1px 0 0 !important;
+    color:#333 !important;
+    background-color: rgba(243, 201, 41, 0.53) !important;
+    border-radius:5px !important;
+    -moz-border-radius:5px !important;
+    -webkit-border-radius:5px !important;
+    border:none !important;
+    font-family:'Helvetica Neue',Arial,sans-serif !important;
+    font-size:16px !important;
+    font-weight:700 !important;
+    height: 100% !important;
+    width: 100% !important;
+    padding:4px 16px;
+    text-shadow:#FE6 0 1px !important; 
+    background-image: url('') !important;
+    text-align: right;
+}
+
+.ui-paginator-next{
+    background-color: rgba(2, 189, 235, 0.56) !important;
+}
+
+.ui-paginator-prev{
+    background-color: rgba(2, 189, 235, 0.56) !important;
+}

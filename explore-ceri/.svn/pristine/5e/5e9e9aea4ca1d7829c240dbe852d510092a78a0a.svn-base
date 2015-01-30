@@ -1,0 +1,170 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Edit/Save Event Page</title>
+        <link rel="stylesheet" href="${facesContext.externalContext.requestContextPath}/css/editEventPageStyle.css" type="text/css" />
+    </h:head>
+    <h:body>
+        <f:view>
+            <h:form id="my_calendar_navigation">
+                <p:commandButton value="Log Out" action="#{loginBean.logout()}"
+                                 ajax="true" update="@all"
+                                             styleClass="navigation_button_class" />
+                <div class="navigation_divider"/>
+                <p:commandButton value="Change Password" action="changePasswordPage?faces-redirect=true"
+                                 ajax="true" update="@all"
+                                             styleClass="navigation_button_class" />
+                <div class="navigation_divider"/>
+                <p:commandButton value="Go to Public Calendars" action="publicCalendarsPage?faces-redirect=true"
+                                 ajax="true" update="@all"
+                    styleClass="navigation_button_class" >
+                    <f:ajax event="click" listener="#{calendarBean.goToPublicCalendarsPage()}" />       
+                </p:commandButton>
+                <div class="navigation_divider"/>
+                <p:commandButton value="Go to My Calendar" action="myCalendarPage?faces-redirect=true"
+                                 ajax="true" update="@all"
+                    styleClass="navigation_button_class" >
+                    <f:ajax event="click" listener="#{calendarBean.goToMyCalendarPage()}" />
+                </p:commandButton>
+                                         
+            </h:form>
+            
+            <h:form id="edit_event_form">
+                
+
+                <p:panelGrid columns="2" id="edit_event_panel"
+                             styleClass="edit_event_input_form_class">
+                    <p:panelGrid columns="2">
+                        <p:outputLabel value="Event Id:" for="event_input_id" />
+                        <p:outputLabel id="event_input_id" value="#{eventBean.current.id}" />
+
+                        <p:outputLabel value="Event Name:" for="event_input_name" />
+                        <p:inputText id="event_input_name" value="#{eventBean.current.name}" />
+
+                        <p:outputLabel value="City:" for="event_input_city" />
+                        <p:inputText id="event_input_city" value="#{eventBean.current.city}" />
+
+                        <p:outputLabel value="Event Street and Number:" for="event_input_streetAndNumber" />
+                        <p:inputText id="event_input_streetAndNumber" value="#{eventBean.current.streetAndNumber}" />
+
+                        <p:outputLabel for="event_input_calendar" value="Date of the Event:" />
+                        <p:calendar id="event_input_calendar" 
+                                    
+                                    value="#{eventBean.current_input_dateOfEvent}" effect="fold" >
+                            
+                        </p:calendar>
+                            
+
+                        <p:outputLabel for="event_input_time" value="Time:" />
+                        <p:calendar id="event_input_time" 
+                                    
+                                    value="#{eventBean.currentBH_AsDateChosen}" 
+                                    pattern="HH:mm:ss" timeOnly="true" 
+                                    styleClass="edit_event_input_form_class">
+                           
+                        </p:calendar>
+
+                        <p:outputLabel for="event_input_duration" value="Duration of the Event:" />
+                        <h:panelGrid columns="1" id="duration_slider"
+                                     styleClass="edit_event_slider_class">
+                            <p:inputText id="event_input_duration" value="#{eventBean.current.duration}" />
+                            <p:slider for="event_input_duration" />
+                        </h:panelGrid>
+
+                        <p:outputLabel value="Event Type" for="eventTypeRadio" />
+                        <h:selectOneRadio id="eventTypeRadio" value="#{eventBean.current_type}">
+                            <f:selectItem itemValue="#{false}" itemLabel="Outdoors"/>   
+                            <f:selectItem itemValue="#{true}" itemLabel="Indoors"/>     
+                        </h:selectOneRadio>
+
+                        <p:outputLabel value="Event Privacy" for="eventPrivacyRadio" />
+                        <h:selectOneRadio id="eventPrivacyRadio" value="#{eventBean.current_privacy}">
+                            <f:selectItem itemValue="#{false}" itemLabel="Private"/>   
+                            <f:selectItem itemValue="#{true}" itemLabel="Public"/>     
+                        </h:selectOneRadio>
+                    </p:panelGrid>
+                    
+                        
+                        
+                    <p:pickList id="users_pick_list" value="#{userPickListView.users}" 
+                                    var="user" effect="bounce"
+                                    itemValue="#{user}" itemLabel="#{user.username}" 
+                                    styleClass="user_pick_list_class"
+                                    converter="userPickListConverter"
+                                    showSourceFilter="true" 
+                                    showTargetFilter="true" 
+                                    filterMatchMode="contains" >
+
+                            <f:facet name="sourceCaption">Not invited users</f:facet>
+                            <f:facet name="targetCaption">Invited users</f:facet>
+
+                            
+
+                            <p:column >
+                                <h:outputText value="#{user.toString()}" />
+                            </p:column>
+                        </p:pickList>
+                        
+                   
+                    
+                    
+                        <p:commandButton value="Save" action="#{eventBean.save()}"
+                                         ajax="true" update="@all"
+                                         disabled="#{eventLazyView.selectedEvent.isPassed()}"
+                                         styleClass="edit_event_button">
+                            
+                                   
+                        </p:commandButton>
+                        <p:commandButton value="Create New" actionListener="#{eventBean.createNew()}" 
+                                         ajax="true" update="@all"
+                                         styleClass="edit_event_button">
+                            
+                        </p:commandButton>
+                    
+
+                </p:panelGrid>
+                
+                <p:growl id="msg" showDetail="true" showSummary="true" escape="false" />
+                
+            </h:form>
+       
+            <h:form id="event_list_form">
+                <p:dataTable var="event" value="#{eventLazyView.lazyModel}" paginator="true" rows="5"
+                             paginatorTemplate="{PreviousPageLink} {CurrentPageReport} {NextPageLink}"
+                             selectionMode="single" selection="#{eventLazyView.selectedEvent}" 
+                             id="eventTable" lazy="true"
+                             styleClass="event_list_table_class">
+                    <p:ajax event="rowSelect" listener="#{eventLazyView.onRowSelect}" 
+                             update=":edit_event_form:event_input_id
+                             :edit_event_form:event_input_name
+                             :edit_event_form:event_input_city
+                             :edit_event_form:event_input_streetAndNumber
+                             :edit_event_form:event_input_calendar
+                             :edit_event_form:event_input_time
+                             :edit_event_form:duration_slider
+                             :edit_event_form:eventTypeRadio
+                             :edit_event_form:eventPrivacyRadio
+                             :edit_event_form
+                             :edit_event_form:users_pick_list"
+                             />
+                    <p:column headerText="Name" sortBy="#{event.name}" >
+                        <h:outputText value="#{event.name}" />
+                    </p:column>
+                    <p:column headerText="Date" sortBy="#{event.dateOfEvent}" >
+                        <h:outputText value="#{event.dateOfEvent}" />
+                    </p:column>
+                    <p:column headerText="Begin hour" sortBy="#{event.beginHour}" >
+                        <h:outputText value="#{event.beginHour}" />
+                    </p:column>
+                </p:dataTable>
+                
+            </h:form>
+            
+        </f:view>
+    </h:body>
+</html>
+
